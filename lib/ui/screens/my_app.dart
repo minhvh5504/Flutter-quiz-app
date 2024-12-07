@@ -8,7 +8,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
-        useMaterial3: true,
         textTheme: const TextTheme(
           bodyMedium: TextStyle(
             color: Colors.white,
