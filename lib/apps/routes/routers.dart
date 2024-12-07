@@ -11,21 +11,21 @@ class RouterConfigCustom {
       GoRoute(
         path: RoutersPath.homePath,
         builder: (BuildContext context, GoRouterState state) {
-          return const ArticlePage();
+          return const HomeScreen();
         },
         routes: <RouteBase>[
           GoRoute(
             name: RoutersName.categoryName,
             path: RoutersPath.categoryPath,
             builder: (BuildContext context, GoRouterState state) {
-              return const CategoryPage();
+              return const CategoryScreen();
             },
             routes: <RouteBase>[
               GoRoute(
                 name: RoutersName.articleName,
                 path: RoutersName.articleName,
                 builder: (BuildContext context, GoRouterState state) {
-                  return const ArticlePage();
+                  return const ArticleScreen();
                 },
               ),
             ],
