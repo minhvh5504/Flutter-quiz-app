@@ -14,7 +14,7 @@ class HomeDropdown extends StatelessWidget {
       style: const TextStyle(
         color: Colors.black,
       ),
-      items: <String>['Dart','Java','C++','C#'].map((String value) {
+      items: <String>['Dart', 'Java', 'C++', 'C#'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
