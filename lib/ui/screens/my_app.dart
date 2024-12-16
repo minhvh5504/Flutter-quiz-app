@@ -3,6 +3,7 @@ import 'package:app_flutter_demo/apps/routes/routers.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
