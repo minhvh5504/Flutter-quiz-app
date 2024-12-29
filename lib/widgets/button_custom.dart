@@ -1,24 +1,20 @@
-import 'package:app_flutter_demo/apps/utils/const.dart';
-import 'package:flutter/foundation.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:app_flutter_demo/apps/utils/const.dart';
 
 class ButtonCustom extends StatelessWidget {
   String title;
-
-  ButtonCustom({super.key, required this.title, required void Function() onTap});
-
+  Function onTap;
+  ButtonCustom({super.key, required this.title, required this.onTap});
   @override
   Widget build(BuildContext context) {
     return Material(
       clipBehavior: Clip.hardEdge,
       borderRadius: const BorderRadius.all(Radius.circular(10.0)),
       child: InkWell(
-        splashColor: Colors.yellow,
-        onTap: () {
-          if (kDebugMode) {
-            print('button');
-          }
-        },
+        splashColor: Colors.amber,
+        onTap: () => onTap(),
         child: Ink(
           padding: EdgeInsets.symmetric(vertical: getHeight(context) * 0.02),
           decoration: const BoxDecoration(

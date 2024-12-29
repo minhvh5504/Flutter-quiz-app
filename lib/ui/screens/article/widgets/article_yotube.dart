@@ -1,6 +1,9 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+// ignore: must_be_immutable
 class ArticleYoutube extends StatefulWidget {
   String? id;
   ArticleYoutube({super.key, required this.id});
