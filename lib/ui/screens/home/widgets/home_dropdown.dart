@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:app_flutter_demo/models/category_model.dart';
+import 'package:app_flutter_demo/providers/category_provider.dart';
 
 class HomeDropdown extends StatelessWidget {
   const HomeDropdown({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      hint: const Text('Chọn ngôn ngữ của bạn',
-          style: TextStyle(
-            color: Colors.white70,
-          )),
+    List<Category> listLanguage =
+        context.watch<CategoryProvider>().listLanguage;
+    return DropdownButton(
+      value: context.watch<CategoryProvider>().idLanguageChoose,
+      hint: const Text(
+        'Chọn ngôn ngữ của bạn',
+        style: TextStyle(color: Colors.white70),
+      ),
       isExpanded: true,
       style: const TextStyle(
-        color: Colors.black,
+        color: Colors.grey,
       ),
-      items: <String>['Dart', 'Java', 'C++', 'C#'].map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+      items: listLanguage.map((Category value) {
+        return DropdownMenuItem(
+          value: value.id,
+          child: Text(
+            value.name,
+          ),
         );
       }).toList(),
-      onChanged: (_) {},
+      onChanged: (value) {
+        context.read<CategoryProvider>().setIdLanguageChoose(value as int);
+      },
     );
   }
 }

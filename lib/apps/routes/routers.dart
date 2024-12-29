@@ -11,7 +11,7 @@ class RouterConfigCustom {
       GoRoute(
         path: RoutersPath.homePath,
         builder: (BuildContext context, GoRouterState state) {
-          return const ArticleScreen();
+          return const HomeScreen();
         },
         routes: <RouteBase>[
           GoRoute(
@@ -25,7 +25,14 @@ class RouterConfigCustom {
                 name: RoutersName.articleName,
                 path: RoutersName.articleName,
                 builder: (BuildContext context, GoRouterState state) {
-                  return const ArticleScreen();
+                  Map data = state.extra as Map;
+
+                  int id = data['id'];
+                  String name = data['name'];
+                  return ArticleScreen(
+                    idTopic: id,
+                    name: name,
+                  );
                 },
               ),
             ],

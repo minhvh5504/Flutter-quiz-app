@@ -1,4 +1,4 @@
-import "package:html/parser.dart";
+import 'package:html/parser.dart';
 
 String parseHtmlString(String htmlString) {
   final document = parse(htmlString);

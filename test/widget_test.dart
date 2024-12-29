@@ -7,9 +7,8 @@
 
 import 'package:app_flutter_demo/ui/screens/my_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:app_flutter_demo/main.dart';
+import 'package:flutter_test/flutter_test.dart'
+    show WidgetTester, expect, find, findsNothing, findsOneWidget, testWidgets;
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

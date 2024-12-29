@@ -1,14 +1,19 @@
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
+import 'package:provider/provider.dart';
 import 'package:app_flutter_demo/apps/utils/const.dart';
 import 'package:app_flutter_demo/apps/utils/parse_htlm.dart';
+import 'package:app_flutter_demo/models/question_model.dart';
 import 'package:app_flutter_demo/ui/screens/article/widgets/article_modal.dart';
+import 'package:app_flutter_demo/providers/question_provider.dart';
 import 'package:app_flutter_demo/widgets/button_custom.dart';
 import 'package:flutter_highlighter/themes/a11y-dark.dart';
 
+// ignore: must_be_immutable
 class ArticleBoxContent extends StatefulWidget {
-  const ArticleBoxContent({super.key});
+  int idTopic;
+  ArticleBoxContent({super.key, required this.idTopic});
 
   @override
   State<ArticleBoxContent> createState() => _ArticleBoxContentState();
@@ -16,109 +21,115 @@ class ArticleBoxContent extends StatefulWidget {
 
 class _ArticleBoxContentState extends State<ArticleBoxContent> {
   final PageController pageController = PageController();
+  String valueInput = '';
 
-  void handleSubmit() async {
-    await showModal(context);
+  void handleSubmit(Question data) async {
+    if (valueInput.isEmpty) return;
+    await showModal(context, valueInput, data);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExpandablePageView.builder(
-      controller: pageController,
-      itemCount: 3,
-      itemBuilder: (context, int) {
-        return Container(
-          margin: const EdgeInsets.all(10.0),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 40.0,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0),
-            ),
-          ),
-          child: ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const Text(
-                'Esse deserunt illum perspiciatis numquam \net.',
-                style: TextStyle(
-                  color: Colors.greenAccent,
-                  fontWeight: FontWeight.bold,
+    return FutureBuilder(
+      future: context.read<QuestionProvider>().getQuestionList(widget.idTopic),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Question> data = snapshot.data as List<Question>;
+          return ExpandablePageView.builder(
+            onPageChanged: (value) {
+              context.read<QuestionProvider>().setCurrentData(value);
+            },
+            controller: pageController,
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 40.0,
                 ),
-              ),
-              SizedBox(height: getHeight(context) * 0.02),
-              Container(
-                padding: const EdgeInsets.all(10.0),
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xff333333),
-                      Color(0xff33FBC9),
-                    ],
-                  ),
+                  color: Colors.white,
                   borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+                    Radius.circular(30.0),
                   ),
                 ),
-                width: getWidth(context), // Chiều rộng đầy đủ
-                child: HighlightView(
-                  parseHtmlString('''
-                    <p>
-                     <br>for (int i = 0; i &lt; n; i++)
-                    {<br>
-                        if (i % 3 == 0) 
-                        {<br>
-                          cout << i;
-                        }<br>
-                    }<br>
-                    </p>
-                  '''),
-                  theme: a11yDarkTheme,
-                  language: 'dart',
-                  padding: const EdgeInsets.all(12),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Source Code Pro',
-                    fontSize: 16,
-                  ),
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    Text(
+                      data[index].title.toString(),
+                      style: const TextStyle(
+                        color: Colors.greenAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: getHeight(context) * 0.02),
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                        color: Color(0xff333333),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            10,
+                          ),
+                        ),
+                      ),
+                      width: getWidth(context),
+                      child: HighlightView(
+                        parseHtmlString(data[index].question),
+                        theme: a11yDarkTheme,
+                        language: 'dart',
+                        padding: const EdgeInsets.all(12),
+                        // Specify text style
+                        textStyle: const TextStyle(
+                          fontFamily: 'My awesome monospace font',
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: getHeight(context) * 0.02),
+                    const Text(
+                      'Đáp án của bạn :',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(height: getHeight(context) * 0.02),
+                    TextFormField(
+                      onChanged: (value) => valueInput = value,
+                      textInputAction: TextInputAction.done,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      decoration: const InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          hintText: 'Nhập đáp án của bạn tại đây'),
+                    ),
+                    SizedBox(height: getHeight(context) * 0.04),
+                    ButtonCustom(
+                      onTap: () => handleSubmit(data[index]),
+                      title: 'Xem kết quả',
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: getHeight(context) * 0.02),
-              const Text(
-                'Đáp án của bạn :',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(height: getHeight(context) * 0.02),
-              TextFormField(
-                onChanged: (_) {},
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (value) {},
-                style: const TextStyle(
-                  color: Colors.black,
-                ),
-                decoration: const InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  hintText: 'Nhập đáp án của bạn tại đây',
-                ),
-              ),
-              SizedBox(height: getHeight(context) * 0.04),
-              ButtonCustom(
-                onTap: handleSubmit,
-                title: 'Xem kết quả',
-              ),
-            ],
-          ),
-        );
+              );
+            },
+          );
+        } else {
+          // ignore: avoid_unnecessary_containers
+          return Container(
+            child: const Center(
+              child: Text('No Data'),
+            ),
+          );
+        }
       },
     );
   }
